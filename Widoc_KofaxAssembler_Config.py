@@ -97,37 +97,3 @@ def read_kofaxdata(data_source):
 
 datastream = read_kofaxdata(data_source)
 
-
-
-def sanitize_batchlist(unprocessed_batchfields):
-    """Cleans a batch list's index data if it contains values
-    that can be cleaned"""
-    processed_batch = []
-    for array in unprocessed_batchfields:
-        #print(len(array))
-        #print(array[0])
-
-        #Zero fill any non-empty OHR Codes in the batchlist
-        if array[0] != '':
-            if array[0] != None:
-                array[0] = array[0].zfill(8)
-
-        if array[3] != None:
-            if array[3].isspace() == True:
-                array[3] = ''
-
-        #Now make mm/dd/yy YYYY-MM-DD
-        if array[4] != '':
-            if array[4] != None:
-                try:
-                    array[4] = datetime.datetime.strptime(array[4], '%m/%d/%y').strftime('%Y-%m-%d')
-                except ValueError:
-                    pass
-
-        if array[5] == '':
-            array[5] = 'UNKNOWN'
-
-        if array[6] == 'Unrecognized Form' or array[6] == 'Handwritten Form' or array[6] == 'DOC-3472' or array[6] == 'DOC-3472A' or array[6] == 'DOC-3472B':
-            array[6] = 'UNKNOWN'
-        processed_batch.append(array)
-    return(processed_batch)
